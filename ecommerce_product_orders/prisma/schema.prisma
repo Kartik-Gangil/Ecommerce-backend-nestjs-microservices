@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Order {
+  id         String      @id @default(uuid())
+  uid        String
+  amount     Int
+  status     String      @default("Pending")
+  Created_at DateTime    @default(now())
+  Update_at  DateTime    @updatedAt
+  item       OrderItem[]
+}
+
+model OrderItem {
+  id           String  @id @default(uuid())
+  orderId      String
+  productId    String
+  quantity     Int
+  pricePerUnit Float
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product      Product @relation(fields: [productId], references: [id])
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  stock       Int
+  image       String?
+  categoryId  String
+  createdAt   DateTime    @default(now())
+  CartItem    CartItem[]
+  OrderItem   OrderItem[]
+}
+
+model Cart {
+  id         String     @id @default(uuid())
+  uid        String
+  Created_at DateTime   @default(now())
+  Update_at  DateTime   @updatedAt
+  item       CartItem[]
+}
+
+model CartItem {
+  id           String  @id @default(uuid())
+  cartId       String
+  productId    String
+  quantity     Int
+  pricePerUnit Float
+  product      Product @relation(fields: [productId], references: [id])
+  cart         Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+}

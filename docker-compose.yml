@@ -1,0 +1,33 @@
+version: '3.8'
+services: 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # For backend communication
+      - "15672:15672"   # For RabbitMQ dashboard
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+  auth-db:
+    image: postgres:17
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: auth_db
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: auth
+    networks:
+      - Ecommerce_Backend
+  order-db:
+    image: postgres:17
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: order_db
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: order
+    networks:
+      - Ecommerce_Backend
+networks:
+  Ecommerce_Backend:

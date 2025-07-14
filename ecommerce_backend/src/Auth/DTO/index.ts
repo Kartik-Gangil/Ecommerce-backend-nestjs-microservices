@@ -1,0 +1,1 @@
+export {authDTO , InfoDTO} from './auth.DTO'
